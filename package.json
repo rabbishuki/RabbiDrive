@@ -1,0 +1,25 @@
+{
+  "name": "rabdrive",
+  "version": "1.0.0",
+  "description": "",
+  "main": "quickstart.js",
+  "dependencies": {
+    "google-auth-library": "^0.10.0",
+    "googleapis": "^19.0.0",
+    "googledrive": "^1.0.8"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Daniel231/RabbiDrive.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Daniel231/RabbiDrive/issues"
+  },
+  "homepage": "https://github.com/Daniel231/RabbiDrive"
+}
