@@ -5,6 +5,10 @@ var googleAuth = require('google-auth-library');
 var app = new (require('express'))()
 var port = 3000
 
+app.get("/", function(req, res) {
+  res.sendFile(__dirname + "/src/client/index.html");
+})
+
 // Interacting to google drive and get all files names and id`s
 app.get("/getFiles", function(req, res) {
   // If modifying these scopes, delete your previously saved credentials

@@ -1,9 +1,13 @@
 import React from 'react';
 import {render} from 'react-dom';
+import {Folder} from './components/folder.js'
 
 class App extends React.Component {
   render () {
-    return <p> Hello React!</p>;
+    return <div>
+      <p> Hello React!</p>
+      <Folder/>
+      </div>;
   }
 }
 
