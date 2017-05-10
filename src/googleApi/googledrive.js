@@ -3,18 +3,14 @@
 var fs = require('fs');
 var readline = require('readline');
 var google = require('googleapis');
-var drive = google.drive('v3');
 var OAuth2Client = google.auth.OAuth2;
 var TOKEN_DIR = (process.env.HOME || process.env.HOMEPATH ||
     process.env.USERPROFILE) + '/.credentials/';
 var TOKEN_PATH = TOKEN_DIR + 'drive-nodejs-quickstart.json';
 
-var SCOPES = ['https://www.googleapis.com/auth/drive',
-'https://www.googleapis.com/auth/drive.file',
-'https://www.googleapis.com/auth/drive.appdata',
-'https://www.googleapis.com/auth/drive.apps.readonly'];
+var SCOPES = ['https://www.googleapis.com/auth/drive.metadata.readonly'];
 
-exports.Auth = function() {
+exports.Auth = function(callback, params) {
     // Load client secrets from a local file.
     fs.readFile('client_secret.json', function processClientSecrets(err, content) {
       if (err) {
@@ -23,7 +19,7 @@ exports.Auth = function() {
       }
       // Authorize a client with the loaded credentials, then call the
       // Drive API.
-      authorize(JSON.parse(content), listFiles);
+      authorize(JSON.parse(content), callback, params);
     });
 };
 
@@ -35,7 +31,7 @@ exports.Auth = function() {
  * @param {Object} credentials The authorization client credentials.
  * @param {function} callback The callback to call with the authorized client.
  */
-function authorize(credentials, callback) {
+function authorize(credentials, callback, params) {
   var clientSecret = credentials.installed.client_secret;
   var clientId = credentials.installed.client_id;
   var redirectUrl = credentials.installed.redirect_uris[0];
@@ -44,12 +40,12 @@ function authorize(credentials, callback) {
   // Check if we have previously stored a token.
   fs.readFile(TOKEN_PATH, function(err, token) {
     if (err) {
-      getNewToken(oauth2Client, callback);
+      getNewToken(oauth2Client, callback, params);
     } else {
       oauth2Client.setCredentials({
         access_token: JSON.parse(token)
       });
-      callback(oauth2Client);
+      callback(oauth2Client, params);
     }
   });
 }
@@ -62,7 +58,7 @@ function authorize(credentials, callback) {
  * @param {getEventsCallback} callback The callback to call with the authorized
  *     client.
  */
-function getNewToken(oauth2Client, callback) {
+function getNewToken(oauth2Client, callback, params) {
   var authUrl = oauth2Client.generateAuthUrl({
     access_type: 'offline',
     scope: SCOPES
@@ -81,7 +77,7 @@ function getNewToken(oauth2Client, callback) {
       }
       oauth2Client.credentials = token;
       storeToken(token);
-      callback(oauth2Client);
+      callback(oauth2Client, params);
     });
   });
 }
@@ -103,45 +99,3 @@ function storeToken(token) {
   console.log('Token stored to ' + TOKEN_PATH);
 }
 
-function listFiles(auth) {
-    var fileID = '1Atsz9W9KBX3k09RUz32I3dzYKATRKIM-7e2Ji_DYk3k';
- 
-    var fileMetadata = {
-        'properties': {"samba":"samba"}
-    };
-   
-    if (fileID == " ") {
-        console.log("Trying to create new file");
-        drive.files.create({
-            resource: fileMetadata,
-            fields: 'id',
-            auth: auth
-        }, function(err, file) {
-            if(err) {
-                console.log('The API returned an error: ' + err);
-                return;
-            } else {
-                console.log('New file created with file id: ' + file.id);
-                fileID = file.id;
-            }
-        });
-    } else {
-        console.log("File already exists, trying to update");
-
-        drive.files.update({
-            fileId: fileID,
-            resource: fileMetadata,
-            // properties: {key:"bamba",value: "bamba"},
-            fields: 'id',
-            auth: auth
-        }, function(err, file) {
-            if(err) {
-                console.log('The API returned an error: ' + err);
-                return;
-            } else {
-                console.log('File Updated ' + file.id);
-                fileID= file.id;
-            }
-        });
-    }
-}

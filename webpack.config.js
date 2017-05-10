@@ -18,13 +18,13 @@ module.exports = {
   ],
   module: {
     loaders: [
-	  {
-		test:   /\.css$/,
-		loader: "style-loader!css-loader?modules&importLoaders=1&localIdentName=[name]__[local]"
-	  },
-	  {
+      {
+        test: /\.css$/,
+        loader: "style-loader!css-loader?modules&importLoaders=1&localIdentName=[name]__[local]"
+      },
+      {
         test: /\.js$/,
-        loaders: [ 'babel' ],
+        loaders: ['babel'],
         exclude: /node_modules/,
         include: __dirname
       },

@@ -4,9 +4,9 @@ export default class Folder extends Component {
 
 	render() {
 		return (
-			<div className="app">
-				<h1 className="title">What is your name?</h1>
-			</div>
+          <div id="home" className="folder">
+            <div className="circle"><span className="icon icon-homeowner-ins"></span></div><p className="folder_name">Homeowners</p>
+          </div>
 		);
 	}
 }
