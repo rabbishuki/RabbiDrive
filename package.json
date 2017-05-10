@@ -2,26 +2,40 @@
   "name": "rabdrive",
   "version": "1.0.0",
   "description": "",
-  "main": "quickstart.js",
   "dependencies": {
-    "express": "^4.15.2",
     "google-auth-library": "^0.10.0",
     "googleapis": "^19.0.0",
     "googledrive": "^1.0.8",
+    "es6-promise": "^3.2.1",
+    "express": "^4.14.0",
+    "isomorphic-fetch": "^2.2.1",
     "react": "^15.5.4",
-    "react-dom": "^15.5.4"
+    "react-dom": "^15.5.4",
+    "react-redux": "^4.4.5",
+    "redux": "^3.5.2",
+    "redux-logger": "^2.6.1",
+    "redux-thunk": "^2.1.0"
   },
   "devDependencies": {
-    "babel-core": "^6.24.1",
-    "babel-loader": "^7.0.0",
-    "babel-preset-es2015": "^6.24.1",
-    "babel-preset-react": "^6.24.1",
-    "webpack": "^2.5.1",
-    "webpack-dev-server": "^1.14.1"
+    "babel-cli": "^6.24.1",
+    "babel-core": "^6.10.4",
+    "babel-loader": "^6.2.4",
+    "babel-preset-es2015": "^6.9.0",
+    "babel-preset-react": "^6.5.0",
+    "babel-preset-stage-0": "^6.5.0",
+    "css-loader": "^0.23.1",
+    "mocha": "^2.5.3",
+    "nock": "^8.0.0",
+    "redux-mock-store": "^1.1.2",
+    "rimraf": "^2.5.3",
+    "style-loader": "^0.13.1",
+    "webpack": "^1.13.1",
+    "webpack-dev-middleware": "^1.6.1",
+    "webpack-hot-middleware": "^2.12.1"
   },
   "scripts": {
-    "dev": "webpack -d --watch",
-    "build": "webpack -p"
+    "start": "babel-node server.js",
+    "slate": "rimraf node_modules && npm i"
   },
   "repository": {
     "type": "git",
