@@ -14,16 +14,18 @@ var SCOPES = ['https://www.googleapis.com/auth/drive',
 'https://www.googleapis.com/auth/drive.appdata',
 'https://www.googleapis.com/auth/drive.apps.readonly'];
 
-// Load client secrets from a local file.
-fs.readFile('client_secret.json', function processClientSecrets(err, content) {
-  if (err) {
-    console.log('Error loading client secret file: ' + err);
-    return;
-  }
-  // Authorize a client with the loaded credentials, then call the
-  // Drive API.
-  authorize(JSON.parse(content), listFiles);
-});
+exports.Auth = function() {
+    // Load client secrets from a local file.
+    fs.readFile('client_secret.json', function processClientSecrets(err, content) {
+      if (err) {
+        console.log('Error loading client secret file: ' + err);
+        return;
+      }
+      // Authorize a client with the loaded credentials, then call the
+      // Drive API.
+      authorize(JSON.parse(content), listFiles);
+    });
+};
 
 
 /**
