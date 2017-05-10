@@ -84,7 +84,7 @@ function getNewToken(oauth2Client, callback) {
   });
 }
 
-/**1gljueVMg2Eqkbs1H_aQw7bYRQWIl4zwfFJ2xxxgZWxM
+/**
  * Store token to disk be used in later program executions.
  *
  * @param {Object} token The token to store to disk.
@@ -105,20 +105,13 @@ function listFiles(auth) {
     var fileID = '1Atsz9W9KBX3k09RUz32I3dzYKATRKIM-7e2Ji_DYk3k';
  
     var fileMetadata = {
-        'name' : 'xyz',
-        'mimeType' : 'text/plain'
-    };
-   
-    var media = {
-        mimeType: 'text/plain',
-        body: 'Hello World from NodeJS and some'
+        'properties': {"samba":"samba"}
     };
    
     if (fileID == " ") {
         console.log("Trying to create new file");
         drive.files.create({
             resource: fileMetadata,
-            media: media,
             fields: 'id',
             auth: auth
         }, function(err, file) {
@@ -132,16 +125,10 @@ function listFiles(auth) {
         });
     } else {
         console.log("File already exists, trying to update");
-       
-        var media = {
-            mimeType: 'text/plain',
-            body: 'Hello World from NodeJS and some more data from update, and its keeps updating',
-            properties: {"bla":"bla"}
-        };
+
         drive.files.update({
             fileId: fileID,
             resource: fileMetadata,
-            media: media,
             // properties: {key:"bamba",value: "bamba"},
             fields: 'id',
             auth: auth
