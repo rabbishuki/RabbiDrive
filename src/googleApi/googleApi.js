@@ -33,7 +33,6 @@ exports.addTag = function (auth, params) {
     drive.files.update({
         fileId: params.fileId,
         resource: fileMetadata,
-        // properties: {key:"bamba",value: "bamba"},
         fields: 'id',
         auth: auth
     }, function (err, file) {
