@@ -1,4 +1,5 @@
 var fs = require('fs');
+var axios = require('axios');
 var readline = require('readline');
 var google = require('googleapis');
 var googleAuth = require('google-auth-library');
@@ -17,15 +18,17 @@ var TOKEN_PATH = TOKEN_DIR + 'drive-nodejs-quickstart.json';
 
 exports.Auth = function(callback, params) {
     // Load client secrets from a local file.
-    fs.readFile('client_secret.json', function processClientSecrets(err, content) {
+    return new Promise (function(resolve, reject) {
+      fs.readFile('client_secret.json', function processClientSecrets(err, content) {
       if (err) {
         console.log('Error loading client secret file: ' + err);
         return;
       }
       // Authorize a client with the loaded credentials, then call the
       // Drive API.
-      authorize(JSON.parse(content), callback, params);
-    });
+      resolve(authorize(JSON.parse(content), callback, params));
+    })
+  });
 };
 
 /**
@@ -36,20 +39,22 @@ exports.Auth = function(callback, params) {
  * @param {function} callback The callback to call with the authorized client.
  */
 function authorize(credentials, callback, params) {
-  var clientSecret = credentials.installed.client_secret;
-  var clientId = credentials.installed.client_id;
-  var redirectUrl = credentials.installed.redirect_uris[0];
+  var clientSecret = credentials.web.client_secret;
+  var clientId = credentials.web.client_id;
+  var redirectUrl = credentials.web.redirect_uris[0];
   var auth = new googleAuth();
   var oauth2Client = new auth.OAuth2(clientId, clientSecret, redirectUrl);
 
   // Check if we have previously stored a token.
-  fs.readFile(TOKEN_PATH, function(err, token) {
-    if (err) {
-      getNewToken(oauth2Client, callback, params);
-    } else {
-      oauth2Client.credentials = JSON.parse(token);
-      callback(oauth2Client, params);
-    }
+  return new Promise (function(resolve, reject) {
+    fs.readFile(TOKEN_PATH, function(err, token) {
+      if (err) {
+        getNewToken(oauth2Client, callback, params);
+      } else {
+        oauth2Client.credentials = JSON.parse(token);
+        resolve(callback(oauth2Client, params));
+      }
+    })
   });
 }
 
@@ -62,27 +67,27 @@ function authorize(credentials, callback, params) {
  *     client.
  */
 function getNewToken(oauth2Client, callback, params) {
-  var authUrl = oauth2Client.generateAuthUrl({
-    access_type: 'offline',
-    scope: SCOPES
-  });
-  console.log('Authorize this app by visiting this url: ', authUrl);
-  var rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-  });
-  rl.question('Enter the code from that page here: ', function(code) {
-    rl.close();
-    oauth2Client.getToken(code, function(err, token) {
-      if (err) {
-        console.log('Error while trying to retrieve access token', err);
-        return;
-      }
-      oauth2Client.credentials = token;
-      storeToken(token);
+  const refresh_token = process.env.refreshToken;
+  const client_id = process.env.clientID;
+  const client_secret = process.env.clientSecret;
+  const refresh_url = "https://www.googleapis.com/oauth2/v4/token";
+
+  const post_body = `grant_type=refresh_token&client_id=${encodeURIComponent(client_id)}&client_secret=${encodeURIComponent(client_secret)}&refresh_token=${encodeURIComponent(refresh_token)}`;
+
+  axios({
+    method: 'post',
+    url: 'https://www.googleapis.com/oauth2/v4/token',
+    data: post_body,
+    headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+    })
+    .then(function (response) {
+      oauth2Client.credentials = response.data;
+      storeToken(oauth2Client.credentials);
       callback(oauth2Client, params);
+    })
+    .catch(function (error) {
+      console.log(error);
     });
-  });
 }
 
 /**
